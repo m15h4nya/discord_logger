@@ -1,56 +1,25 @@
 package main
 
 import (
-	"encoding/json"
+	"discord_logger/configParser"
+	"discord_logger/handlers"
 	"github.com/bwmarrin/discordgo"
-	"io"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-type token struct {
-	Token string
-}
-
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-	if m.Content == "test" {
-		s.ChannelMessageSend(m.ChannelID, "It's working")
-	}
-}
-
 func main() {
-	token := token{}
-	file, err := os.Open("./config/config.json")
+	token := configParser.ParseToken()
+	discord, err := discordgo.New("Bot " + token)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	defer file.Close()
-	js, err := io.ReadAll(file)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = json.Unmarshal(js, &token)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	discord, err := discordgo.New("Bot " + token.Token)
-	discord.AddHandler(messageCreate)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	discord.State.MaxMessageCount = 100
+	discord.AddHandler(handlers.MessageCreate)
+	discord.AddHandler(handlers.MessageDelete)
 
 	err = discord.Open()
 	sc := make(chan os.Signal, 1)
