@@ -13,13 +13,15 @@ import (
 func main() {
 	token := configParser.ParseToken()
 	discord, err := discordgo.New("Bot " + token)
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	discord.StateEnabled = true
 	discord.State.MaxMessageCount = 100
+	discord.AddHandler(handlers.Ready)
 	discord.AddHandler(handlers.MessageCreate)
 	discord.AddHandler(handlers.MessageDelete)
+	discord.AddHandler(handlers.MessageEdit)
 
 	err = discord.Open()
 	sc := make(chan os.Signal, 1)
