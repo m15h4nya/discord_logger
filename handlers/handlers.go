@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"discord_logger/errorLogger"
 	"github.com/bwmarrin/discordgo"
+	"log"
 )
 
 var (
 	logChannel = discordgo.Channel{ID: "531632649526050822"}
-	Messages   = make(map[string]*discordgo.Message)
+	// Messages   = make(map[string]*discordgo.Message)
 )
 
 func Ready(s *discordgo.Session, m *discordgo.Ready) {
@@ -28,28 +28,31 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if m.Content == "test" {
 		_, err := s.ChannelMessageSend(logChannel.ID, "It's working")
-		errorLogger.CheckErr(err, "handlers.MessageCreate")
+		if err != nil {
+			log.Printf("MessageCreate: %v", err)
+		}
 	}
 }
 
 func MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
-	defer func() {
-		_ = recover()
-	}()
+	if m.BeforeUpdate == nil {
+		return
+	}
+
 	msgAuthor := m.BeforeUpdate.Author.Username
 	msgOldContent := m.BeforeUpdate.Content
 	msgNewContent := m.Content
 	// Messages[m.ID] = nil
 	_, err := s.ChannelMessageSend(logChannel.ID, msgAuthor+": "+msgOldContent+" -> "+msgNewContent)
 	if err != nil {
-		errorLogger.CheckErr(err, "handlers.MessageDelete")
+		log.Printf("MessageEdit: %v\n", err)
 	}
 }
 
 func MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	defer func() {
-		_ = recover()
-	}()
+	if m.BeforeDelete == nil {
+		return
+	}
 	/*
 		msgAuthor := Messages[m.ID].Author.Username
 		msgContent := Messages[m.ID].Content
@@ -59,6 +62,6 @@ func MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
 	msgContent := m.BeforeDelete.Content
 	_, err := s.ChannelMessageSend(logChannel.ID, msgAuthor+": **deleted message** -> "+msgContent)
 	if err != nil {
-		errorLogger.CheckErr(err, "handlers.MessageDelete")
+		log.Printf("MessageDelete: %v\n", err)
 	}
 }

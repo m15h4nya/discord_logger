@@ -24,10 +24,10 @@ func main() {
 	discord.AddHandler(handlers.MessageEdit)
 
 	err = discord.Open()
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
 	if err != nil {
 		log.Fatal(err)
 	}
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
 }
