@@ -1,30 +1,25 @@
 package handlers
 
 import (
+	"discord_logger/configParser"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
 
 var (
-	logChannel = discordgo.Channel{ID: "531632649526050822"}
-	// Messages   = make(map[string]*discordgo.Message)
+	logChannel = configParser.ParseLogChannel()
+	guild      = configParser.ParseGuild()
 )
 
 func Ready(s *discordgo.Session, m *discordgo.Ready) {
-	/*
-		guild, _ := s.Guild("465780328611708937")
-		s.State.GuildAdd(guild)
-		ch, _ := s.State.Channel("531632649526050822")
-		fmt.Printf("%#v", ch.Messages)
-	*/
+
 }
 
 func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-
-	// Messages[m.ID] = m.Message
 
 	if m.Content == "test" {
 		_, err := s.ChannelMessageSend(logChannel.ID, "It's working")
@@ -35,14 +30,12 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
-	if m.BeforeUpdate == nil {
+	if m.BeforeUpdate.Author.ID == s.State.User.ID || m.BeforeUpdate == nil || m.Content == "" {
 		return
 	}
-
 	msgAuthor := m.BeforeUpdate.Author.Username
 	msgOldContent := m.BeforeUpdate.Content
 	msgNewContent := m.Content
-	// Messages[m.ID] = nil
 	_, err := s.ChannelMessageSend(logChannel.ID, msgAuthor+": "+msgOldContent+" -> "+msgNewContent)
 	if err != nil {
 		log.Printf("MessageEdit: %v\n", err)
@@ -50,18 +43,26 @@ func MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
 }
 
 func MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	if m.BeforeDelete == nil {
+	if m.BeforeDelete.Author.ID == s.State.User.ID || m.BeforeDelete == nil {
 		return
 	}
-	/*
-		msgAuthor := Messages[m.ID].Author.Username
-		msgContent := Messages[m.ID].Content
-		Messages[m.ID] = nil
-	*/
+	fmt.Println(m.BeforeDelete.ID)
+	auditLog, err := s.GuildAuditLog(guild.ID, "", "", int(discordgo.AuditLogActionMessageDelete), 100)
+	if err != nil {
+		fmt.Printf("MessageDelete on \"auditLog, err :=...\" : %v\n", err)
+	}
 	msgAuthor := m.BeforeDelete.Author.Username
 	msgContent := m.BeforeDelete.Content
-	_, err := s.ChannelMessageSend(logChannel.ID, msgAuthor+": **deleted message** -> "+msgContent)
+	eventAuthor := m.BeforeDelete.Author.Username
+	for _, entry := range auditLog.AuditLogEntries {
+		if entry.TargetID == m.ID {
+			user, _ := s.User(entry.UserID)
+			eventAuthor = user.Username
+		}
+	}
+
+	_, err = s.ChannelMessageSend(logChannel.ID, eventAuthor+": **deleted "+msgAuthor+"'s message** -> "+msgContent)
 	if err != nil {
-		log.Printf("MessageDelete: %v\n", err)
+		log.Printf("MessageDelete on \"_, err = s.ChannelMessageSend(...\" : %v\n", err)
 	}
 }

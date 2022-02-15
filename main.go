@@ -3,6 +3,7 @@ package main
 import (
 	"discord_logger/configParser"
 	"discord_logger/handlers"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -12,7 +13,9 @@ import (
 
 func main() {
 	token := configParser.ParseToken()
-	discord, err := discordgo.New("Bot " + token)
+	logCh := configParser.ParseLogChannel()
+	discord, err := discordgo.New("Bot " + token.Token)
+	fmt.Println(logCh.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
