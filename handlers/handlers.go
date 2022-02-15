@@ -30,7 +30,7 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
-	if m.BeforeUpdate.Author.ID == s.State.User.ID || m.BeforeUpdate == nil || m.Content == "" {
+	if m.BeforeUpdate == nil || m.Content == "" || m.BeforeUpdate.Author.ID == s.State.User.ID {
 		return
 	}
 	msgAuthor := m.BeforeUpdate.Author.Username
@@ -43,7 +43,7 @@ func MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
 }
 
 func MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
-	if m.BeforeDelete.Author.ID == s.State.User.ID || m.BeforeDelete == nil {
+	if m.BeforeDelete == nil || m.BeforeDelete.Author.ID == s.State.User.ID {
 		return
 	}
 	fmt.Println(m.BeforeDelete.ID)
