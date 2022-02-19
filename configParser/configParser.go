@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-func ParseToken() (token Token) {
-	token = Token{}
+func ParseConfig() (cfg Config) {
+	cfg = Config{}
 	file, err := os.Open("./config/config.json")
 	defer file.Close()
 
@@ -22,59 +22,20 @@ func ParseToken() (token Token) {
 		log.Fatal(err)
 	}
 
-	err = json.Unmarshal(js, &token)
+	err = json.Unmarshal(js, &cfg)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return token
+	return cfg
 }
 
-func ParseLogChannel() (logChannel LogChannel) {
-	logChannel = LogChannel{}
-	file, err := os.Open("./config/config.json")
-	defer file.Close()
-
-	if err != nil {
-		log.Fatal(err)
+func Contains(str string, sl []string) bool {
+	for _, v := range sl {
+		if str == v {
+			return true
+		}
 	}
-
-	js, err := io.ReadAll(file)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = json.Unmarshal(js, &logChannel)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return logChannel
-}
-
-func ParseGuild() (guild Guild) {
-	guild = Guild{}
-	file, err := os.Open("./config/config.json")
-	defer file.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	js, err := io.ReadAll(file)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = json.Unmarshal(js, &guild)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return guild
+	return false
 }

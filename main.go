@@ -2,8 +2,7 @@ package main
 
 import (
 	"discord_logger/configParser"
-	"discord_logger/handlers"
-	"fmt"
+	dsHandlers "discord_logger/handlers"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -12,19 +11,17 @@ import (
 )
 
 func main() {
-	token := configParser.ParseToken()
-	logCh := configParser.ParseLogChannel()
-	discord, err := discordgo.New("Bot " + token.Token)
-	fmt.Println(logCh.ID)
+	handler := &dsHandlers.Handler{Cfg: configParser.ParseConfig()}
+	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
+
+	discord, err := discordgo.New("Bot " + handler.Cfg.Token)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	discord.StateEnabled = true
-	discord.State.MaxMessageCount = 100
-	discord.AddHandler(handlers.Ready)
-	discord.AddHandler(handlers.MessageCreate)
-	discord.AddHandler(handlers.MessageDelete)
-	discord.AddHandler(handlers.MessageEdit)
+	discord.State.MaxMessageCount = 500
+	dsHandlers.AddHandlers(discord, handlers)
 
 	err = discord.Open()
 	if err != nil {
