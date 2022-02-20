@@ -3,12 +3,11 @@ package main
 import (
 	"discord_logger/configParser"
 	dsHandlers "discord_logger/handlers"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
 
-func createSession(c chan bool) {
+func createSession() {
 	handler := &dsHandlers.Handler{Cfg: configParser.ParseConfig()}
 	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
 
@@ -26,11 +25,11 @@ func createSession(c chan bool) {
 		log.Fatal(err)
 	}
 
-	if <-c {
+	/*if <-c {
 		err := discord.Close()
 		if err != nil {
 			fmt.Printf("Error while closing the session: %v", err)
 		}
 		return
-	}
+	}*/
 }
