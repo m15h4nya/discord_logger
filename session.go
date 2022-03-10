@@ -3,33 +3,44 @@ package main
 import (
 	"discord_logger/configParser"
 	dsHandlers "discord_logger/handlers"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
 
-func createSession() {
+type Bot struct {
+	ready bool
+	*discordgo.Session
+}
+
+func (b *Bot) CreateSession() {
+	fmt.Println("FUCK")
 	handler := &dsHandlers.Handler{Cfg: configParser.ParseConfig()}
 	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
 
-	discord, err := discordgo.New("Bot " + handler.Cfg.Token)
+	var err error
+	b.Session, err = discordgo.New("Bot " + handler.Cfg.Token)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	discord.StateEnabled = true
-	discord.State.MaxMessageCount = 500
-	dsHandlers.AddHandlers(discord, handlers)
+	b.StateEnabled = true
+	b.ready = true
+	b.State.MaxMessageCount = 500
+	dsHandlers.AddHandlers(b.Session, handlers)
+}
 
-	err = discord.Open()
+func (b *Bot) StartSession() {
+	err := b.Open()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
+}
 
-	/*if <-c {
-		err := discord.Close()
-		if err != nil {
-			fmt.Printf("Error while closing the session: %v", err)
-		}
-		return
-	}*/
+func (b *Bot) StopSession() {
+	b.ready = false
+	err := b.Session.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

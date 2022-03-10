@@ -1,8 +1,12 @@
 package main
 
+import "sync"
+
 func main() {
-	ch := make(chan int, 1)
-	go createServer()
-	go createSession()
-	<-ch
+	wg := sync.WaitGroup{}
+	server := HTTPService{}
+	server.InitService()
+	wg.Add(1)
+	go server.createServer()
+	wg.Wait()
 }
