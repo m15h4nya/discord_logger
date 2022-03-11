@@ -5,6 +5,8 @@ Bot used to log message activities such as MessageDelete, MessageEdit, etc.
 `git clone https://github.com/m15h4nya/discord_logger.git`
 
 # Starting
+Firstly, edit your config for your guild
+
 `docker build -t ds_logger .`
 
 `docker run -dp 8080:8080 ds_logger`
