@@ -1,0 +1,10 @@
+{
+  "token": "",
+  "bumpToken": "",
+  "bumpChannelID": "",
+  "logChannelID": "",
+  "guildID": "",
+  "channelsToIgnore": [
+    ""
+  ]
+}
