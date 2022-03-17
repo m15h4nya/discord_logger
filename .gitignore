@@ -13,7 +13,7 @@
 *pycache*
 .vscode
 .idea
-config
+config/config.json
 errorLogger
 structs
 src
