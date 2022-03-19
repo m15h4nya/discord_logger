@@ -1,23 +1,24 @@
-package main
+package http
 
 import (
+	"discord_logger/botSession"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
 )
 
-type HTTPService struct {
+type Service struct {
 	//serverErrorChannel chan error
 	router     *mux.Router
 	httpserver *http.Server
 	//sig        chan bool
-	botSession *Bot
+	botSession *botSession.Bot
 }
 
-func (h *HTTPService) InitService() {
+func (h *Service) InitService() {
 	//h.sig = make(chan bool, 1)
-	h.botSession = &Bot{}
+	h.botSession = &botSession.Bot{}
 	//h.router = mux.NewRouter()
 	h.httpserver = &http.Server{
 		Addr:              ":8080",
@@ -28,7 +29,7 @@ func (h *HTTPService) InitService() {
 	}
 }
 
-func (h HTTPService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/":
 		_, err := fmt.Fprintf(w, "basePage")
@@ -36,7 +37,7 @@ func (h HTTPService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 	case "/start":
-		if h.botSession.ready {
+		if h.botSession.Ready {
 			_, err := fmt.Fprintf(w, "already started")
 			if err != nil {
 				fmt.Println(err)
@@ -50,7 +51,7 @@ func (h HTTPService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 	case "/stop":
-		if !h.botSession.ready {
+		if !h.botSession.Ready {
 			_, err := fmt.Fprintf(w, "already stopped")
 			if err != nil {
 				fmt.Println(err)
@@ -66,7 +67,7 @@ func (h HTTPService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *HTTPService) createServer() {
+func (h *Service) CreateServer() {
 	err := h.httpserver.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)

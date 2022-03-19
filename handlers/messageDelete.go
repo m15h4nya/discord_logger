@@ -12,25 +12,29 @@ func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete
 		configParser.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
 		return
 	}
-	//auditLog, err := s.GuildAuditLog(h.Cfg.GuildID, "", "", int(discordgo.AuditLogActionMessageDelete), 100)
-	//if err != nil {
-	//	fmt.Printf("MessageDelete on \"auditLog, err :=...\" : %v\n", err)
-	//}
+
 	msgAuthor := m.BeforeDelete.Author.Username
 	msgContent := m.BeforeDelete.Content
 	eventAuthor := m.BeforeDelete.Author.Username
-	msgAttachments := m.Attachments
-	msg := fmt.Sprintf("%v: **deleted %v's message** -> %v \nAttachments -> %v", eventAuthor, msgAuthor, msgContent, msgAttachments)
-	//for _, entry := range auditLog.AuditLogEntries {
-	//	if entry.TargetID == m.ID {
-	//		user, _ := s.User(entry.UserID)
-	//		eventAuthor = user.Username
-	//	}
-	//	fmt.Println(discordgo.SnowflakeTimestamp(entry.TargetID))
-	//}
-
-	_, err := s.ChannelMessageSend(h.Cfg.LogChannelID, msg)
+	msgAttachments := m.BeforeDelete.Attachments
+	msgChannel, err := s.Channel(m.ChannelID)
 	if err != nil {
-		log.Printf("MessageDelete on \"_, err = s.ChannelMessageSend(...\" : %v\n", err)
+		fmt.Println(err)
+	}
+
+	logAttachmentsMsg := ""
+	if len(msgAttachments) != 0 {
+		logAttachmentsMsg += "Attachments:\n"
+		for _, attachment := range msgAttachments {
+			aURL := fmt.Sprintf("%v\n", attachment.URL)
+			logAttachmentsMsg += aURL
+		}
+	}
+
+	logMsg := fmt.Sprintf("`%v: deleted %v's message in %v` -> %v\n", eventAuthor, msgAuthor, msgChannel.Name, msgContent)
+
+	_, err = s.ChannelMessageSend(h.Cfg.LogChannelID, logMsg+logAttachmentsMsg)
+	if err != nil {
+		log.Printf("MessageDelete: %v\n", err)
 	}
 }
