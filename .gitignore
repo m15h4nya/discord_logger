@@ -14,7 +14,7 @@
 config/config.json
 errorLogger
 structs
-src
+http/src
 handlers/bulkDelete.go
 # Dependency directories (remove the comment below to include it)
 # vendor/
