@@ -15,11 +15,17 @@ func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete
 
 	msgAuthor := m.BeforeDelete.Author.Username
 	msgContent := m.BeforeDelete.Content
-	eventAuthor := m.BeforeDelete.Author.Username
 	msgAttachments := m.BeforeDelete.Attachments
 	msgChannel, err := s.Channel(m.ChannelID)
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	auditLog, err := s.GuildAuditLog(m.GuildID, "", "", int(discordgo.AuditLogActionMessageDelete), 1)
+	eventAuthor, _ := s.User(auditLog.AuditLogEntries[0].UserID)
+
+	if err != nil {
+		log.Printf("MessageDelete: %v\n", err)
 	}
 
 	logAttachmentsMsg := ""
@@ -31,7 +37,7 @@ func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete
 		}
 	}
 
-	logMsg := fmt.Sprintf("`%v: deleted %v's message in %v` -> %v\n", eventAuthor, msgAuthor, msgChannel.Name, msgContent)
+	logMsg := fmt.Sprintf("`%v: deleted %v's message in %v` -> %v\n", eventAuthor.Username, msgAuthor, msgChannel.Name, msgContent)
 
 	_, err = s.ChannelMessageSend(h.Cfg.LogChannelID, logMsg+logAttachmentsMsg)
 	if err != nil {
