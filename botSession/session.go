@@ -1,8 +1,8 @@
 package botSession
 
 import (
+	handlers2 "discord_logger/botSession/handlers"
 	"discord_logger/configParser"
-	dsHandlers "discord_logger/handlers"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
@@ -14,7 +14,7 @@ type Bot struct {
 }
 
 func (b *Bot) CreateSession() {
-	handler := &dsHandlers.Handler{Cfg: configParser.ParseConfig()}
+	handler := &handlers2.Handler{Cfg: configParser.ParseConfig()}
 	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
 
 	var err error
@@ -26,7 +26,7 @@ func (b *Bot) CreateSession() {
 	b.StateEnabled = true
 	b.Ready = true
 	b.State.MaxMessageCount = 500
-	dsHandlers.AddHandlers(b.Session, handlers)
+	handlers2.AddHandlers(b.Session, handlers)
 }
 
 func (b *Bot) StartSession() {
