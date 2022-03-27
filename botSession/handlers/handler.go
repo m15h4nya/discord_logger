@@ -5,5 +5,6 @@ import (
 )
 
 type Handler struct {
-	Cfg configParser.Config
+	Cfg      configParser.Config
+	OptState string
 }
