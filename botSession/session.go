@@ -14,7 +14,7 @@ type Bot struct {
 }
 
 func (b *Bot) CreateSession() {
-	handler := &handlers2.Handler{Cfg: configParser.ParseConfig()}
+	handler := &handlers2.Handler{Cfg: configParser.ParseConfig(), OptState: ""}
 	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
 
 	var err error
