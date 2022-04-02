@@ -21,7 +21,7 @@ func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete
 		fmt.Println(err)
 	}
 
-	eventAuthor := m.Author.Username
+	eventAuthor := m.BeforeDelete.Author.Username
 	auditLog, err := s.GuildAuditLog(m.GuildID, "", "", int(discordgo.AuditLogActionMessageDelete), 1)
 	if auditLog.AuditLogEntries[0].ID != h.OptState {
 		t, _ := s.User(auditLog.AuditLogEntries[0].UserID)
