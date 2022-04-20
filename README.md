@@ -7,9 +7,9 @@ Bot used to log message activities such as MessageDelete, MessageEdit, etc.
 # Starting
 Firstly, edit your config for your guild
 
-`docker build -t ds_logger .`
+`docker build -t logger:latest`
 
-`docker run -dp 8080:8080 ds_logger`
+`docker run -dp 8080:8080 --name logger logger:latest`
 
 Now the docker container is running
 

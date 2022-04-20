@@ -1,18 +1,15 @@
-# syntax=docker/dockerfile:1
-FROM golang:1.17.1-buster AS build
-WORKDIR /opt
-ENV CGO_ENABLED=0
-COPY go.mod /opt
-RUN go mod download
-COPY . /opt
+FROM golang:1.18.0-buster as build
 
-RUN go build -o /discord_logger
+RUN apt-get update
 
-FROM alpine:3.14
+COPY . /discord_logger
+RUN cd /discord_logger && go build -o service main.go
 
-WORKDIR /
+FROM debian:buster-slim
 
-COPY --from=build /opt/config/config.json /config/config.json
-COPY --from=build /discord_logger /discord_logger
+RUN mkdir -p /opt/discord_logger
+COPY --from=build /discord_logger/service /opt/discord_logger/service
+COPY --from=build /discord_logger/config/config.json /opt/discord_logger/config/config.json
 
-CMD ["/discord_logger"]
+WORKDIR /opt/discord_logger
+CMD ["./service"]
