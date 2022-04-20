@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	go bumpBot.Bump()
 	server := http.Service{}
 	server.InitService()
 	server.CreateServer()
+	go bumpBot.Bump()
 }
