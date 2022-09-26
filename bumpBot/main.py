@@ -1,5 +1,4 @@
 import time
-import json
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -11,8 +10,18 @@ def init_driver():
     options = webdriver.ChromeOptions()
     options.add_argument('--ignore-ssl-errors=yes')
     options.add_argument('--ignore-certificate-errors')
+    return webdriver.Chrome(
+        executable_path="driver/chromedriver.exe",
+        options=options
+    )
+
+
+def init_driver_remote():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-ssl-errors=yes')
+    options.add_argument('--ignore-certificate-errors')
     return webdriver.Remote(
-        command_executor="http://localhost:4444/wd/hub",
+        command_executor="http://172.17.0.2:4444/wd/hub",
         options=options
     )
 
@@ -31,12 +40,11 @@ def skip_modal(page):
 
 
 def login(page):
-    cfg = json.load(open("config.json"))
     page.get("https://discord.com/login")
     skip_modal(page)
-    page.find_element(*Locators.EMAIL).send_keys(cfg['login'])
+    page.find_element(*Locators.EMAIL).send_keys("misha@idwte.ru")
     time.sleep(5)
-    page.find_element(*Locators.PASSWORD).send_keys(cfg['password'])
+    page.find_element(*Locators.PASSWORD).send_keys("GanterStudios")
     time.sleep(5)
     page.find_element(*Locators.LOGIN).click()
     time.sleep(5)
@@ -56,11 +64,7 @@ def send_bump(page):
     time.sleep(60 * 10) #10 minutes
 
 
-cfg = json.load(open("config.json"))
-print(cfg['login'])
-print(cfg['password'])
-
-driver_ = init_driver()
+driver_ = init_driver_remote()
 login(driver_)
 open_page(driver_)
 while True:

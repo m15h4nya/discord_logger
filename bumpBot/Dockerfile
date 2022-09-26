@@ -5,6 +5,5 @@ RUN apk update && apk add py3-pip
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 COPY . .
-RUN apk add chromium
 
 CMD ["python3", "main.py"]
