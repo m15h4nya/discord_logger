@@ -26,6 +26,16 @@ def init_driver_remote():
     options = webdriver.ChromeOptions()
     options.add_argument('--ignore-ssl-errors=yes')
     options.add_argument('--ignore-certificate-errors')
+    return webdriver.Chrome(
+        executable_path="driver/chromedriver.exe",
+        options=options
+    )
+
+
+def init_driver_remote():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-ssl-errors=yes')
+    options.add_argument('--ignore-certificate-errors')
     return webdriver.Remote(
         command_executor="http://selenium:4444",
         options=options
