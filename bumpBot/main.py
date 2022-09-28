@@ -21,17 +21,6 @@ def get_conf() -> dict:
 #         options=options
 #     )
 
-
-def init_driver_remote():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--ignore-ssl-errors=yes')
-    options.add_argument('--ignore-certificate-errors')
-    return webdriver.Chrome(
-        executable_path="driver/chromedriver.exe",
-        options=options
-    )
-
-
 def init_driver_remote():
     options = webdriver.ChromeOptions()
     options.add_argument('--ignore-ssl-errors=yes')
@@ -78,6 +67,7 @@ def send_bump(page, text: str):
     sleep(1)
     page.find_element(*Locators.INPUTSPANDELTA).send_keys(Keys.ENTER)
     sleep(1)
+
 
 
 commands: list[str] = ["/bump", "/like", "/up"]
