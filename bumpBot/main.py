@@ -55,17 +55,21 @@ def open_page(page):
     time.sleep(5)
 
 
-def send_bump(page):
-    page.find_element(*Locators.INPUTSPAN).send_keys("/bump")
+def send_bump(page, text: str):
+    page.find_element(*Locators.INPUTSPAN).send_keys(text)
     time.sleep(1)
     page.find_element(*Locators.INPUTSPAN).send_keys(Keys.ENTER)
     time.sleep(1)
     page.find_element(*Locators.INPUTSPANDELTA).send_keys(Keys.ENTER)
-    time.sleep(60 * 10) #10 minutes
+    time.sleep(1)
 
+
+commands: [str] = ["/bump", "/like"]
 
 driver_ = init_driver_remote()
 login(driver_)
 open_page(driver_)
 while True:
-    send_bump(driver_)
+    for i in commands:
+        send_bump(driver_, i)
+    time.sleep(60 * 10) #10 minutes
