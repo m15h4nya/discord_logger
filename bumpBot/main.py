@@ -1,5 +1,7 @@
 import json
 from time import sleep
+import json
+from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -39,11 +41,13 @@ def check_for_valid_channel(page: webdriver.Chrome, channel_name: str):
 def skip_modal(page: webdriver.Remote):
     try:
         sleep(5)
+        sleep(5)
         page.find_element(*Locators.SKIP_MODAL).click()
     except NoSuchElementException:
         pass
 
 
+def login(page, cfg: dict):
 def login(page, cfg: dict):
     page.get("https://discord.com/login")
     skip_modal(page)
@@ -51,7 +55,12 @@ def login(page, cfg: dict):
     sleep(5)
     page.find_element(*Locators.PASSWORD).send_keys(cfg['password'])
     sleep(5)
+    page.find_element(*Locators.EMAIL).send_keys(cfg['login'])
+    sleep(5)
+    page.find_element(*Locators.PASSWORD).send_keys(cfg['password'])
+    sleep(5)
     page.find_element(*Locators.LOGIN).click()
+    sleep(5)
     sleep(5)
 
 
@@ -63,9 +72,12 @@ def open_page(driver: webdriver.Remote):
 def send_bump(page, text: str):
     page.find_element(*Locators.INPUTSPAN).send_keys(text)
     sleep(1)
+    sleep(1)
     page.find_element(*Locators.INPUTSPAN).send_keys(Keys.ENTER)
     sleep(1)
+    sleep(1)
     page.find_element(*Locators.INPUTSPANDELTA).send_keys(Keys.ENTER)
+    sleep(1)
     sleep(1)
 
 
