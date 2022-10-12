@@ -42,12 +42,12 @@ def skip_modal(page):
 def login(page):
     page.get("https://discord.com/login")
     skip_modal(page)
-    page.find_element(*Locators.EMAIL).send_keys("misha@idwte.ru")
+    page.find_element(*Locators.EMAIL).send_keys("m15h4nya@yandex.ru")
     time.sleep(5)
     page.find_element(*Locators.PASSWORD).send_keys("GanterStudios")
     time.sleep(5)
     page.find_element(*Locators.LOGIN).click()
-    time.sleep(5)
+    time.sleep(60*3)
 
 
 def open_page(page):
