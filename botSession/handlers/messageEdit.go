@@ -8,19 +8,24 @@ import (
 )
 
 func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
-	if m.BeforeUpdate == nil || m.Content == "" || m.BeforeUpdate.Author.ID == s.State.User.ID ||
+	msg, err := s.State.Message(m.ChannelID, m.ID)
+	if err != nil {
+		log.Printf("MessageDelete: %v\n", err)
+	}
+
+	if msg == nil || m.Content == "" || msg.Author.ID == s.State.User.ID ||
 		configParser.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
 		return
 	}
 
-	msgAuthor := m.BeforeUpdate.Author.Username
+	msgAuthor := msg.Author.Username
 	msgChannel, err := s.Channel(m.ChannelID)
 	if err != nil {
 		log.Printf("MessageEdit: %v\n", err)
 	}
 
-	msgOldContent := m.BeforeUpdate.Content
-	msgOldAttachments := m.BeforeUpdate.Attachments
+	msgOldContent := msg.Content
+	msgOldAttachments := msg.Attachments
 	msgNewContent := m.Content
 	msgNewAttachments := m.Attachments
 
@@ -43,4 +48,10 @@ func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) 
 	if err != nil {
 		log.Printf("MessageEdit: %v\n", err)
 	}
+
+	err = s.State.MessageAdd(m.Message)
+	if err != nil {
+		log.Printf("MessageEdit: %v\n", err)
+	}
+
 }

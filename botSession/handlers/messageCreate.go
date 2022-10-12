@@ -10,10 +10,9 @@ func (h *Handler) MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 		return
 	}
 
-	if m.Content == "test" {
-		_, err := s.ChannelMessageSend(h.Cfg.LogChannelID, "It's working")
-		if err != nil {
-			log.Printf("MessageCreate: %v", err)
-		}
+	err := s.State.MessageAdd(m.Message)
+	if err != nil {
+		log.Printf("MessageCreate: %v\n", err)
 	}
+
 }
