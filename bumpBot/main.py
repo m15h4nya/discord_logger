@@ -48,7 +48,6 @@ def skip_modal(page: webdriver.Remote):
 
 
 def login(page, cfg: dict):
-def login(page, cfg: dict):
     page.get("https://discord.com/login")
     skip_modal(page)
     page.find_element(*Locators.EMAIL).send_keys(cfg['login'])
