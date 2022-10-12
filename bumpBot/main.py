@@ -80,4 +80,3 @@ while True:
     for i in commands:
         send_bump(driver_, i)
     sleep(60 * 10) #10 minutes
-
