@@ -15,7 +15,7 @@ type Bot struct {
 
 func (b *Bot) CreateSession() {
 	handler := &handlers2.Handler{Cfg: configParser.ParseConfig(), OptState: ""}
-	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete}
+	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete, handler.MessageDeleteBulk, handler.Ready}
 
 	var err error
 	b.Session, err = discordgo.New("Bot " + handler.Cfg.Token)
@@ -23,9 +23,8 @@ func (b *Bot) CreateSession() {
 		log.Fatal(err)
 	}
 
-	b.StateEnabled = true
+	b.Session.StateEnabled = false
 	b.Ready = true
-	b.State.MaxMessageCount = 500
 	handlers2.AddHandlers(b.Session, handlers)
 }
 
