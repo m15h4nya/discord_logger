@@ -70,10 +70,10 @@ def send_bump(page, text: str):
     sleep(1)
 
 
-commands: [str] = ["/bump", "/like"]
+commands: [str] = ["/bump", "/like", "/up"]
 
 
-driver_ = init_driver_remote()
+driver_ = init_driver()
 login(driver_, get_conf())
 open_page(driver_)
 while True:
