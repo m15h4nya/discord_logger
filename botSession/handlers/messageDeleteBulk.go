@@ -9,6 +9,11 @@ import (
 
 func (h *Handler) MessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDeleteBulk) {
 
+	for i := 0; i < len(m.Messages)/2; i++ {
+		j := len(m.Messages) - i - 1
+		m.Messages[i], m.Messages[j] = m.Messages[j], m.Messages[i]
+	}
+
 	for _, message := range m.Messages {
 		msg, err := s.State.Message(m.ChannelID, message)
 		if err != nil {
