@@ -10,7 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-*__pychache__
+*__pycache__
 .idea
 botSession/state
 *config.json
