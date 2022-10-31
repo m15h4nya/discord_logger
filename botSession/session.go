@@ -1,21 +1,29 @@
 package botSession
 
 import (
-	handlers2 "discord_logger/botSession/handlers"
-	"discord_logger/configParser"
+	hndlrs "discord_logger/botSession/handlers"
+	"discord_logger/config"
 	"fmt"
+
 	"github.com/bwmarrin/discordgo"
-	"log"
+	"go.uber.org/zap"
 )
 
 type Bot struct {
 	Ready bool
 	*discordgo.Session
+	log *zap.SugaredLogger
 }
 
-func (b *Bot) CreateSession() {
-	handler := &handlers2.Handler{Cfg: configParser.ParseConfig(), OptState: ""}
-	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete, handler.MessageDeleteBulk, handler.Ready}
+func (b *Bot) CreateSession(cfg *config.Config, log *zap.SugaredLogger) {
+	handler := &hndlrs.Handler{Cfg: cfg, OptState: ""}
+	handlers := []interface{}{
+		handler.MessageCreate,
+		handler.MessageEdit,
+		handler.MessageDelete,
+		handler.MessageDeleteBulk,
+		handler.Ready,
+	}
 
 	var err error
 	b.Session, err = discordgo.New("Bot " + handler.Cfg.Token)
@@ -25,7 +33,7 @@ func (b *Bot) CreateSession() {
 
 	b.Session.StateEnabled = false
 	b.Ready = true
-	handlers2.AddHandlers(b.Session, handlers)
+	hndlrs.AddHandlers(b.Session, handlers)
 }
 
 func (b *Bot) StartSession() {

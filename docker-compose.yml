@@ -1,0 +1,37 @@
+version: '2'
+services:
+  elasticsearch:
+    image: elasticsearch:8.4.3
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+    restart: always
+  bot:
+    build: .
+    image: "ds_logger:latest"
+    container_name: ds_logger
+    ports:
+      - 8080:8080
+    depends_on:
+      - elasticsearch
+    restart: always
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - 4444:4444
+      - 5900:5900
+    environment:
+      - SE_NODE_SESSION_TIMEOUT=13140000
+    shm_size: "1.5g"
+    restart: always
+  bumper:
+    build: ./bumperBot
+    image: "bumper:latests"
+    container_name: ds_bumper
+    depends_on:
+      - selenium
+    restart: always

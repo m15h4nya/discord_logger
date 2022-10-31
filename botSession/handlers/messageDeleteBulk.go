@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"discord_logger/configParser"
+	"discord_logger/config"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) MessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDeleteBulk) {
@@ -21,7 +22,7 @@ func (h *Handler) MessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDe
 			continue
 		}
 		if msg == nil || msg.Author.ID == s.State.User.ID ||
-			configParser.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
+			config.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
 			continue
 		}
 

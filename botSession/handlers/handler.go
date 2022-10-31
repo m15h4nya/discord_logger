@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"discord_logger/configParser"
+	"discord_logger/config"
 )
 
 type Handler struct {
-	Cfg          configParser.Config
+	Cfg          *config.Config
 	OptState     string
 	OptStateBulk string
 }

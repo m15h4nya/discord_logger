@@ -1,13 +1,14 @@
 import json
 from time import sleep
 
+from typing import Tuple, List
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from locators import Locators
 
 
-def get_conf() -> (str, str):
+def get_conf() -> Tuple[str, str]:
     cfg = json.load(open("config.json"))
     return cfg
 
@@ -70,7 +71,7 @@ def send_bump(page, text: str):
     sleep(1)
 
 
-commands: [str] = ["/bump", "/like", "/up"]
+commands: List[str] = ["/bump", "/like", "/up"]
 
 
 driver_ = init_driver_remote()

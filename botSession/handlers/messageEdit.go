@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"discord_logger/configParser"
+	"discord_logger/config"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
@@ -14,7 +15,7 @@ func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) 
 	}
 
 	if msg == nil || m.Content == "" || msg.Author.ID == s.State.User.ID ||
-		configParser.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
+		config.Contains(m.ChannelID, h.Cfg.IgnoreChannelsIDs) {
 		return
 	}
 
