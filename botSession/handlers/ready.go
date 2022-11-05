@@ -1,8 +1,10 @@
 package handlers
 
 import (
-	"github.com/bwmarrin/discordgo"
+	"fmt"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) Ready(s *discordgo.Session, m *discordgo.Ready) {
@@ -11,6 +13,9 @@ func (h *Handler) Ready(s *discordgo.Session, m *discordgo.Ready) {
 	s.State.MaxMessageCount = 500
 
 	guild, err := s.Guild(h.Cfg.GuildID)
+	if err != nil {
+		fmt.Println(err)
+	}
 	channels, err := s.GuildChannels(h.Cfg.GuildID)
 	if err != nil {
 		log.Printf("Ready: %v\n", err)

@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
