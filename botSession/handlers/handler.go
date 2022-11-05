@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"discord_logger/configParser"
-	"fmt"
 	"regexp"
 	"strings"
 
