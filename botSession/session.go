@@ -1,11 +1,12 @@
 package botSession
 
 import (
-	handlers2 "discord_logger/botSession/handlers"
+	"discord_logger/botSession/handlers"
 	"discord_logger/configParser"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 type Bot struct {
@@ -14,8 +15,8 @@ type Bot struct {
 }
 
 func (b *Bot) CreateSession() {
-	handler := &handlers2.Handler{Cfg: configParser.ParseConfig(), OptState: ""}
-	handlers := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete, handler.MessageDeleteBulk, handler.Ready}
+	handler := handlers.NewHandler(configParser.ParseConfig())
+	hndlrs := []interface{}{handler.MessageCreate, handler.MessageEdit, handler.MessageDelete, handler.MessageDeleteBulk, handler.Ready}
 
 	var err error
 	b.Session, err = discordgo.New("Bot " + handler.Cfg.Token)
@@ -25,7 +26,7 @@ func (b *Bot) CreateSession() {
 
 	b.Session.StateEnabled = false
 	b.Ready = true
-	handlers2.AddHandlers(b.Session, handlers)
+	handlers.AddHandlers(b.Session, hndlrs)
 }
 
 func (b *Bot) StartSession() {

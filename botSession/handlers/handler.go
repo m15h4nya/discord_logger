@@ -12,6 +12,11 @@ type Handler struct {
 	Cfg          configParser.Config
 	OptState     string
 	OptStateBulk string
+	warnedUsers  map[string]int
+}
+
+func NewHandler(cfg configParser.Config) *Handler {
+	return &Handler{Cfg: cfg, OptState: "", OptStateBulk: "", warnedUsers: make(map[string]int)}
 }
 
 func (h *Handler) removePings(s *discordgo.Session, m *discordgo.Message) (content string) {
