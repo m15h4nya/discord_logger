@@ -14,7 +14,7 @@
 .vscode
 .idea
 botSession/state
-*config.json
+*config
 errorLogger
 structs
 http/src
