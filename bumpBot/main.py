@@ -88,11 +88,12 @@ try:
     while True:
         for i in commands:
             send_bump(driver_, i)
-        sleep(60) # 10 minutes
+        sleep(60 * 10) # 10 minutes
         counter += 1
         if counter == 10:
             counter = 1
             driver_.refresh()
+        sleep(5)
 except Exception as err:
     driver_.quit()
     raise err
