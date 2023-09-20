@@ -26,7 +26,7 @@ func (h *Handler) MessageDeleteBulk(s *discordgo.Session, m *discordgo.MessageDe
 		}
 
 		msgAuthor := msg.Author.Username
-		msgContent := msg.Content
+		msgContent := h.removePings(s, msg)
 		msgAttachments := msg.Attachments
 		msgChannel, err := s.Channel(m.ChannelID)
 		if err != nil {

@@ -3,8 +3,9 @@ package handlers
 import (
 	"discord_logger/configParser"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) {
@@ -24,9 +25,9 @@ func (h *Handler) MessageEdit(s *discordgo.Session, m *discordgo.MessageUpdate) 
 		log.Printf("MessageEdit: %v\n", err)
 	}
 
-	msgOldContent := msg.Content
+	msgOldContent := h.removePings(s, msg)
 	msgOldAttachments := msg.Attachments
-	msgNewContent := m.Content
+	msgNewContent := h.removePings(s, m.Message)
 	msgNewAttachments := m.Attachments
 
 	logAttachmentsMsg := ""

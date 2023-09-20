@@ -3,8 +3,9 @@ package handlers
 import (
 	"discord_logger/configParser"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete) {
@@ -19,7 +20,7 @@ func (h *Handler) MessageDelete(s *discordgo.Session, m *discordgo.MessageDelete
 	}
 
 	msgAuthor := msg.Author.Username
-	msgContent := msg.Content
+	msgContent := h.removePings(s, msg)
 	msgAttachments := msg.Attachments
 	msgChannel, err := s.Channel(m.ChannelID)
 	if err != nil {
