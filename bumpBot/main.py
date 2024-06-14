@@ -77,13 +77,13 @@ def send_bump(page, text: str):
 
 
 
-commands: list[str] = ["/bump", "/like", "/up"]
+commands: list[str] = ["/bump", "/like"]
 driver_ = init_driver_remote()
 sleep(15)
 try:
     counter = 1
     login(driver_, get_conf())
-    sleep(30) # to pass captcha if needed
+    sleep(40) # to pass captcha if needed
     open_page(driver_)
     while True:
         for i in commands:
